@@ -10,6 +10,7 @@
         content="Portfolio of Zakaria Tahri, a software engineer building desktop apps with .NET, WinAppSDK, and WinUI 3.">
     <meta name="keywords"
         content="Zakariathr22, Zakaria Tahri, Software Engineer, .NET, WinUI, WinAppSDK, C#, Portfolio, Desktop Apps, AI, Programming, Coding">
+    <meta name="author" content="Zakaria Tahri">
     <meta name="author" content="Zakariathr22">
 
     <!-- Open Graph (for social media previews) -->
@@ -88,8 +89,8 @@
         </ul>
 
         <p>
-            Stick around if you like. Worst case, you’ll see I can use a <code>Grid</code> and style a
-            <code>Border</code>.
+            Stick around if you like. Worst case, you’ll see I can use a <code class="keyword">Grid</code> and style a
+            <code class="keyword">Border</code>.
         </p>
     </main>
 
@@ -98,7 +99,8 @@
         <h2 class="magic-title">About Me</h2>
         <p>
             My name is <strong>Zakaria Tahri</strong>, a Software Engineer who mostly wrangles
-            <code>.NET</code>, <code>WinAppSDK</code>, and <code>WinUI</code> into creating desktop apps that
+            <code class="keyword">.NET</code>, <code class="keyword">WinAppSDK</code>, and <code
+                class="keyword">WinUI</code> into creating desktop apps that
             (hopefully) don’t crash.
             I hold a Master’s degree in Computer Science (Software Engineering & Information Systems),
             which basically means I spent years learning how to tell computers what to do while they
@@ -132,7 +134,8 @@
             <li>
                 <p><strong>Favorite song:</strong> “Fourth of July”</p>
             </li>
-            <li><strong>Favorite quote: </strong><q>The person who moves a mountain begins by carrying away small stones.</q> – Confucius</li>
+            <li><strong>Favorite quote: </strong><q>The person who moves a mountain begins by carrying away small
+                    stones.</q> – Confucius</li>
         </ul>
     </section>
 
@@ -235,7 +238,7 @@
                 <p>
                     SDK-API Docs:
                     <a href="https://github.com/MicrosoftDocs/sdk-api/pull/1982" target="_blank">
-                        Document <code>HWNDPARENT (-8)</code> for SetWindowLong...
+                        Document <code class="keyword">HWNDPARENT (-8)</code> for SetWindowLong...
                     </a>
                     (basically, I explained window ownership so future devs don’t suffer like I did
                     <img src="assets/Grin Tears.png" alt="PR icon" class="emoji">).
@@ -246,7 +249,7 @@
                 <p>
                     WinUI Gallery:
                     <a href="https://github.com/microsoft/WinUI-Gallery/pull/1781" target="_blank">
-                        Add <code>AppWindow</code> sample
+                        Add <code class="keyword">AppWindow</code> sample
                     </a>
                 </p>
             </li>
@@ -274,9 +277,55 @@
     <!-- Blogs Section -->
     <section id="blogs" class="container">
         <h2 class="magic-title">Blogs & Posts</h2>
-        <p class="coming-soon">Coming soon… (writing is hard)</p>
-        <div class="gif-frame">
-            <img src="assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
+
+        <div class="blogs-grid">
+            <a href="blogs/0.html" class="blog-card">
+                <h3 class="blog-title">The First Blog</h3>
+                <p class="blog-subtitle">Where everything begins (and nothing works yet)</p>
+                <p class="blog-date">Published: Sep 20, 2025</p>
+
+                <div class="tags">
+                    <span class="tag">Personal</span>
+                    <span class="tag">Start</span>
+                    <span class="tag">Journey</span>
+                    <span class="tag">Blog</span>
+                    <span class="tag">First Post</span>
+                    <span class="tag">Thoughts</span>
+                    <span class="tag">Casual</span>
+                    <span class="tag">Writing</span>
+                    <span class="tag">Ideas</span>
+                    <button class="show-more" onclick="event.preventDefault();">+ More</button>
+                </div>
+            </a>
+
+            <a href="blogs/1.html" class="blog-card">
+                <h3 class="blog-title">
+                    Automating Math Input in WinUI 3
+                </h3>
+                <p class="blog-subtitle">A Practical Guide to NPT and Unicode Injection</p>
+                <p class="blog-date">Published: Sep 21, 2025</p>
+
+                <div class="tags">
+                    <span class="tag">C#</span>
+                    <span class="tag">WinUI 3</span>
+                    <span class="tag">Unicode</span>
+                    <span class="tag">Math Input</span>
+                    <span class="tag">RichEditBox</span>
+                    <span class="tag">SendInput</span>
+                    <span class="tag">Automation</span>
+                    <span class="tag">NPT</span>
+                    <span class="tag">Text Editor</span>
+                    <span class="tag">Virtual Keyboard</span>
+                    <span class="tag">Symbols</span>
+                    <span class="tag">Hack</span>
+                    <button class="show-more" onclick="event.preventDefault();">+ More</button>
+                </div>
+            </a>
+        </div>
+
+        <!-- Show All Blogs button -->
+        <div class="show-all" hidden="true">
+            <a href="blogs.html" class="btn">Show All Blogs →</a>
         </div>
     </section>
 
@@ -299,6 +348,10 @@
             </a>
         </div>
     </section>
+
+    <div class="gif-frame">
+        <img src="assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
+    </div>
 
     <!-- Footer -->
     <footer class="footer">

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating Math Input in WinUI 3 | Zakaria Tahri</title>
+
+    <!-- SEO -->
+    <meta name="description"
+        content="A practical guide to automating math input in WinUI 3 using RichEditBox and SendInput for Unicode injection.">
+    <meta name="keywords"
+        content="WinUI 3 RichEditBox, RichEditBox math input, Unicode math input C#, WinUI 3 math editor, RichEditBox LaTeX style input, SendInput Unicode C#, C# RichEditBox example, WinUI 3 text editor, WinUI 3 Unicode input, C# virtual keyboard input, RichEditBox Unicode characters, simulate keyboard input C#, Win32 SendInput example, math formula rendering WinUI, RichEditBox code sample, WinUI 3 custom input, C# math symbols input, RichEditBox advanced usage, input automation C#, insert math symbols RichEditBox, math structures input C#, LaTeX-like input C#, math mode RichEditBox, matrix input RichEditBox, integrals and summation input, math editor Windows app, C# math notation support">
+    <meta name="author" content="Zakaria Tahri">
+    <meta name="author" content="Zakariathr22">
+
+    <!-- Fonts & Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- PrismJS for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../index.html">ZT</a>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">Automating Math Input in WinUI 3 Using <code class="keyword">RichEditBox</code> and <code
+                class="keyword">SendInput</code></h1>
+        <h2>A Practical Guide to NPT and Unicode Injection</h3>
+
+            <p>
+                To add math input to your WinUI 3 application, start with the <code class="keyword">RichEditBox</code>
+                control. Since <strong>Windows App SDK 1.7</strong>, it supports a new feature called
+                <strong>RichEditMathMode</strong>, which allows the control to interpret and convert text into MathML in
+                real time. For example, typing <code class="keyword">\pi</code> renders as <strong>π</strong>, and <code
+                    class="keyword">1/2</code> becomes <strong>½</strong>.
+            </p>
+
+            <pre><code class="language-cs">MathEditor.TextDocument.SetMathMode(RichEditMathMode.MathOnly);</code></pre>
+
+            <p>
+                You don’t need to write MathML manually. Instead, it uses a system called <strong>Nearly Plain Text
+                    Unicode (NPT)</strong>, a structured input format that maps common math sequences (like <code
+                    class="keyword">\infty</code>, <code class="keyword">\sum</code>, <code
+                    class="keyword">\sqrt</code>, etc.) to Unicode symbols. These symbols are then rendered as MathML
+                behind the scenes.
+            </p>
+
+            <p>
+                Why is this necessary? Because many math symbols (like integrals, Greek letters, or arrows) aren’t
+                available on any physical keyboard. NPT acts as a semantic shorthand, making it possible to input
+                complex formulas with plain text.
+            </p>
+
+            <p>There are two things you must understand to use this effectively:</p>
+            <ol>
+                <li>Learn the available NPT input sequences (Unicode math tables).</li>
+                <li>Trigger rendering by sending a <code class="keyword">U+0020</code> (space) or pressing Enter, this
+                    finalizes the math input and forces the control to parse and render it properly.</li>
+            </ol>
+
+            <div>
+                <img src="..\assets\Blogs\1-1.gif" alt="gif demo">
+            </div>
+
+            <p>
+                The problem is, if you're building an app that involves math input, <strong>you can’t expect users to
+                    memorize the entire NPT Unicode spec</strong>, unless your target audience is a group of monks
+                who’ve taken a vow to speak only in NPT Unicode <img src="../assets/Grin Tears.png" alt="PR icon"
+                    class="emoji">.
+            </p>
+
+            <p>
+                Let’s be real: users want to click <code class="keyword">π</code> button and see π, not study a Unicode
+                textbook.
+            </p>
+
+            <p>So, what’s the solution? You do the typing for them.</p>
+
+            <p>
+                But here’s the catch: <strong>WinUI 3 / Windows App SDK doesn’t provide a built-in way to inject raw
+                    Unicode characters into a <code class="keyword">RichEditBox</code></strong>, especially not in a way
+                that triggers MathMode rendering.
+            </p>
+
+            <p>That’s where the <strong>Win32 <code class="keyword">SendInput</code> API</strong> comes in.</p>
+
+            <p>
+                <code class="keyword">SendInput</code> is a low-level Windows API that lets you simulate
+                <strong>keyboard or mouse input</strong>, just as if the user typed it. It bypasses the limitations of
+                the high-level UI frameworks by writing directly to the input buffer of the focused window.
+            </p>
+
+            <p>In this case, we use it to:</p>
+            <ul>
+                <li>Send Unicode characters (not keycodes or key names)</li>
+                <li>Trigger special math input sequences programmatically</li>
+                <li>Mimic real user input to activate RichEditBox’s MathMode rendering</li>
+            </ul>
+
+            <p>
+                Behind the scenes, we create and dispatch a series of synthetic keyboard events (keydown and keyup) for
+                each Unicode character. This lets us inject unicode chars and sequences like <code
+                    class="keyword">\u03C0</code> or <code class="keyword">\u25A0(1&&@&1&@&&1)</code> directly into the
+                control, no physical keyboard needed, no language switching required.
+            </p>
+
+            <p>
+                It’s a bit hacky, but it works flawlessly, and it’s the only reliable way to automate Unicode math input
+                in a RichEditBox as of today (This is the best I could do, for now <img src="../assets/Grin Tears.png"
+                    alt="PR icon" class="emoji">).
+            </p>
+            <hr>
+            <section>
+                <h2>Demo App</h2>
+                <p>
+                    To make all of this less abstract, I built a small demo app that shows how to
+                    automate math input in <code class="keyword">RichEditBox</code> using <code
+                        class="keyword">SendInput</code>.
+                </p>
+
+                <div class="gif-frame">
+                    <img src="..\assets\Blogs\1-2.png" alt="Demo app screenshot">
+                </div>
+
+                <p>
+                    <img src="../assets/Hand Right.png" alt="PR icon" class="emoji"> Check out the code here:
+                    <a href="https://github.com/ZakariaThr22/WinUI3-MathEditorDemo" target="_blank">
+                        WinUI3-MathEditorDemo
+                    </a>
+                </p>
+
+                <p>
+                    If you find it helpful, a <img src="../assets/Star.png" alt="PR icon" class="emoji"> on GitHub would
+                    make me way too happy
+                    (seriously, it feeds my ego).
+                </p>
+            </section>
+
+            <hr>
+
+            <h2>References</h2>
+            <ul>
+                <li><a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.text.richeditmathmode?view=windows-app-sdk-1.7"
+                        target="_blank">RichEditMathMode Enum.</a></li>
+                <li><a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.text.richedittextdocument.setmathmode?view=windows-app-sdk-1.7"
+                        target="_blank">SetMathMode(RichEditMathMode) Method.</a></li>
+                <li><a href="https://www.unicode.org/notes/tn28/UTN28-PlainTextMath-v3.3.pdf"
+                        target="_blank">UnicodeMath, A Nearly Plain-Text Encoding of Mathematics, <em>Murray Sargent
+                            III</em>.</a></li>
+                <li><a href="https://devblogs.microsoft.com/oldnewthing/?p=110979" target="_blank">You can’t simulate
+                        keyboard input with PostMessage, revisited, <em>The Old New Thing</em> By <em>Raymond
+                            Chen</em>.</a></li>
+                <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput"
+                        target="_blank">SendInput function (winuser.h).</a></li>
+            </ul>
+    </main>
+    
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="0.html">⬅ Previous: The First Blog</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
