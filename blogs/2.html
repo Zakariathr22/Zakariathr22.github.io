@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Lifecycle - Event Sequence | Zakaria Tahri</title>
+
+    <!-- SEO -->
+    <meta name="description"
+        content="Experimenting with subscribing to every WinUI 3 control event and what the results reveal.">
+    <meta name="keywords"
+        content="WinUI 3 events, LayoutUpdated caution, WinUI 3 lifecycle, Loaded and Unloaded events, EffectiveViewportChanged, SizeChanged WinUI, debugging WinUI controls, C# Rich UI, WinUI control behavior">
+    <meta name="author" content="Zakaria Tahri">
+    <meta name="author" content="Zakariathr22">
+
+    <!-- Fonts & Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- PrismJS for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+
+    <!-- Blog Content -->
+    <main class="container blog-post">
+        <h1 class="magic-title">Control Lifecycle - Event Sequence</h1>
+        <h2>A structured view of initialization, updates, and teardown events</h2>
+
+        <p>
+            Developers are curious creatures. Sometimes we look at a control in WinUI 3 and wonder:
+            <em>“What secrets are you hiding? When do you fire your events? And why do you keep lagging my app when I
+                touch layout stuff?”</em>
+        </p>
+
+        <p>
+            So, naturally, I did what any sane person would do: <img src="../assets/Hand Right.png" alt="PR icon"
+                class="emoji"> I subscribed to <strong>every single event</strong> I
+            could find on a control.
+        </p>
+
+        <p>
+            Yes, <em>every</em>. Even the ones nobody talks about at conferences. Even the ones that sound like they
+            belong in a Marvel movie
+            (<code class="keyword">ManipulationInertiaStarting</code>, anyone?).
+        </p>
+
+        <br>
+        <h2>The Experiment</h2>
+        <p>
+            I hooked up every event handler to a simple:
+        </p>
+
+        <pre><code class="language-cs">Debug.WriteLine("EventName");</code></pre>
+        <p>Code Files: <a href="../code-samples/2.cs" target="_blank">C#</a>, <a href="../code-samples/2.xmal" target="_blank">XAML</a></p>
+
+        <p>And then… I launched the app, touched nothing, and just closed the window.
+            What did I see?</p>
+
+
+        <br>
+        <h2>The Output</h2>
+        <pre><code class="language-cs">DataContextChanged //Occurs when the value of the FrameworkElement.DataContext property changes.
+Loading //Occurs when a FrameworkElement begins to load.
+EffectiveViewportChanged //Occurs when the FrameworkElement's effective viewport changes.
+SizeChanged //Occurs when either the ActualHeight or the ActualWidth property changes value on a FrameworkElement.
+LayoutUpdated //Occurs when the layout of the visual tree changes, due to layout-relevant properties changing value or some other action that refreshes the layout.
+Loaded //Occurs when a FrameworkElement has been constructed and added to the object tree, and is ready for interaction.
+LayoutUpdated
+
+Window Closing
+
+LayoutUpdated
+Unloaded //Occurs when this object is no longer connected to the main object tree.
+LayoutUpdated</code></pre>
+        <br>
+        <h2>The Story These Events Tell</h2>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1400" style="max-width:100%; height:auto;">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"
+                        markerUnits="strokeWidth">
+                        <path d="M0,0 L10,5 L0,10 z" fill="#eee" />
+                    </marker>
+                    <style>
+                        .box {
+                            fill: #111;
+                            stroke: #eee;
+                            stroke-width: 2;
+                        }
+
+                        .title {
+                            fill: #fff;
+                        }
+
+                        .subtitle {
+                            fill: #ccc;
+                        }
+
+                        .warn {
+                            fill: #ff6666;
+                        }
+
+                        .muted {
+                            fill: #aaa;
+                        }
+
+                        .emoji {
+                            font: 18px "Segoe UI Emoji";
+                        }
+                    </style>
+                </defs>
+
+                <g transform="translate(60,40)">
+                    <!-- DataContextChanged -->
+                    <g transform="translate(0,0)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">DataContextChanged</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">binding context arrives</text>
+                    </g>
+                    <line x1="300" y1="76" x2="300" y2="120" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- Loading -->
+                    <g transform="translate(0,120)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">Loading</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">control is being built</text>
+                    </g>
+                    <line x1="300" y1="192" x2="300" y2="236" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- EffectiveViewportChanged -->
+                    <g transform="translate(0,236)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">EffectiveViewportChanged</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">layout figuring itself out</text>
+                    </g>
+                    <line x1="300" y1="308" x2="300" y2="352" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- SizeChanged -->
+                    <g transform="translate(0,352)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">SizeChanged</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">control got its size</text>
+                    </g>
+                    <line x1="300" y1="424" x2="300" y2="468" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- First LayoutUpdated -->
+                    <g transform="translate(0,468)">
+                        <rect class="box" width="600" height="88" rx="10" ry="10" />
+                        <text x="300" y="30" class="title" text-anchor="middle">LayoutUpdated ⚠️</text>
+                        <text x="300" y="56" class="warn" text-anchor="middle">first interruption</text>
+                        <text x="300" y="76" class="emoji" text-anchor="middle">📲</text>
+                    </g>
+                    <line x1="300" y1="556" x2="300" y2="600" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- Loaded -->
+                    <g transform="translate(0,600)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="30" class="title" text-anchor="middle">Loaded 🎉</text>
+                        <text x="300" y="52" class="muted" text-anchor="middle">control is part of the visual tree —
+                            ready</text>
+                    </g>
+                    <line x1="300" y1="672" x2="300" y2="716" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- Second LayoutUpdated -->
+                    <g transform="translate(0,716)">
+                        <rect class="box" width="600" height="88" rx="10" ry="10" />
+                        <text x="300" y="30" class="title" text-anchor="middle">LayoutUpdated ⚠️</text>
+                        <text x="300" y="56" class="warn" text-anchor="middle">“Hey, remember me?”</text>
+                        <text x="300" y="76" class="emoji" text-anchor="middle">💬</text>
+                    </g>
+                    <line x1="300" y1="804" x2="300" y2="904" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+
+                    <!-- Window Closing -->
+                    <g transform="translate(0,904)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">Window Closing 👋</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">time to clean up</text>
+                    </g>
+                    <line x1="300" y1="976" x2="300" y2="1020" stroke="#eee" stroke-width="2"
+                        marker-end="url(#arrow)" />
+
+                    <!-- Third LayoutUpdated -->
+                    <g transform="translate(0,1020)">
+                        <rect class="box" width="600" height="88" rx="10" ry="10" />
+                        <text x="300" y="30" class="title" text-anchor="middle">LayoutUpdated ⚠️</text>
+                        <text x="300" y="56" class="warn" text-anchor="middle">still talking... even while
+                            closing</text>
+                        <text x="300" y="76" class="emoji" text-anchor="middle">🙄</text>
+                    </g>
+                    <line x1="300" y1="1108" x2="300" y2="1152" stroke="#eee" stroke-width="2"
+                        marker-end="url(#arrow)" />
+
+                    <!-- Unloaded -->
+                    <g transform="translate(0,1152)">
+                        <rect class="box" width="600" height="72" rx="10" ry="10" />
+                        <text x="300" y="28" class="title" text-anchor="middle">Unloaded</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">control removed from visual tree —
+                            cleanup</text>
+                    </g>
+                    <line x1="300" y1="1224" x2="300" y2="1268" stroke="#eee" stroke-width="2"
+                        marker-end="url(#arrow)" />
+
+                    <!-- Fourth LayoutUpdated -->
+                    <g transform="translate(0,1268)">
+                        <rect class="box" width="600" height="88" rx="10" ry="10" />
+                        <text x="300" y="30" class="title" text-anchor="middle">LayoutUpdated ⚠️</text>
+                        <text x="300" y="56" class="warn" text-anchor="middle">haha... one last ping 🙃</text>
+                        <text x="300" y="76" class="emoji" text-anchor="middle">🔔</text>
+                    </g>
+                </g>
+            </svg>
+
+        </div>
+
+        <br>
+        <h2>A Word of Caution About <code class="keyword">LayoutUpdated</code></h2>
+        <p>
+            This event is like that one friend who never stops texting. It fires <strong>a lot</strong>.
+            You look at it the wrong way? Boom, <code class="keyword">LayoutUpdated</code>. Resize the window by 1px?
+            <code class="keyword">LayoutUpdated</code> party.
+        </p>
+
+        <p>
+            <img src="../assets/Hand Right.png" alt="PR icon" class="emoji"> <strong>Do not put expensive logic
+                here.</strong> Unless you enjoy frame drops, stutters, and fans
+            spinning like a jet engine.
+        </p>
+
+        <p>
+            If you must react to layout changes, use lighter events like <code class="keyword">SizeChanged</code> or
+            <code class="keyword">EffectiveViewportChanged</code>.
+            Reserve <code class="keyword">LayoutUpdated</code> for small, quick reactions only.
+        </p>
+
+        <br>
+        <h2>Final Thoughts</h2>
+        <p>
+            Subscribing to everything showed me one thing: <strong>most events won’t fire unless you poke the
+                control</strong>,
+            but the lifecycle events tell a neat story from birth to death.
+        </p>
+
+        <ul>
+            <li>Use <code class="keyword">Loaded</code> for setup.</li>
+            <li>Use <code class="keyword">Unloaded</code> for cleanup.</li>
+            <li>Avoid <code class="keyword">LayoutUpdated</code> for expensive logic — or, if you have no other option,
+                handle it carefully as in <a href="https://github.com/microsoft/WinUI-Gallery/pull/2023"
+                    target="_blank">this PR</a>.</li>
+        </ul>
+
+        <hr>
+
+        <h2>References</h2>
+        <ul>
+            <li><a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.control?view=windows-app-sdk-1.8#events"
+                    target="_blank">Control class events</a></li>
+        </ul>
+    </main>
+
+    <!-- Blog Navigation -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="1.html">⬅ Previous: Automating Math Input in WinUI 3</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
