@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Calendar Density Coloring | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="Enhance WinUI 3 CalendarView with appointment density coloring, tooltips, and theme-aware visuals." />
+    <meta name="keywords"
+        content="WinUI 3, CalendarView, Appointment Density, Coloring, Tooltips, C#, XAML, UI, Desktop, .NET" />
+    <meta name="author" content="Zakaria Tahri">
+    <meta name="author" content="Zakariathr22">
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+
+    <!-- Blog Content -->
+    <main class="container blog-post">
+        <h1 class="magic-title">Calendar Density Coloring</h1>
+        <h2>Enhancing CalendarView with Stripes, Tooltips, and Smarter Visuals in WinUI3</h2>
+
+        <div class="gif-frame" style="margin-bottom:1rem;">
+            <img src="../assets/Blogs/3-1.png"
+                alt="Screenshot of CustomCalendarView in action" />
+        </div>
+
+        <p>
+            👉 Code Files:
+        </p>
+        <ul>
+            <li><a href="../code-samples/CustomCalendarView.xaml" target="_blank">XAML File</a></li>
+            <li><a href="../code-samples/CustomCalendarView.xaml.cs" target="_blank">C# Code-Behind</a></li>
+        </ul>
+
+        <hr>
+
+        <h2>Introduction</h2>
+        <p>
+            So, you’ve landed on my <strong>unknown blog site</strong>. That already tells me something about you:
+            you’re <strong>tired</strong>. You’ve been clicking around StackOverflow, GitHub issues, blog posts,
+            even ChatGPT can't help, and now you’ve ended up here.
+        </p>
+
+        <p>
+            And I know what you’re thinking:
+        </p>
+
+        <quote>
+            “Please, internet stranger, I don’t want to read an essay. Just give me the code.”
+        </quote>
+
+        <p>
+            Okay. Fair. I respect that. That’s why I linked the code <em>above the fold</em> 👆.
+            But… if you’re still scrolling, maybe you’re <em>slightly curious</em> what this code actually does.
+        </p>
+
+        <hr>
+
+        <h2>What’s in the Box?</h2>
+        <p>
+            We’re building a <strong>Custom <code class="keyword">CalendarView</code> control</strong> in <strong>WinUI
+                3</strong> that:
+        </p>
+        <ul>
+            <li>Shows appointment “density” (how busy a day is) with colored background stripes.</li>
+            <li>Adds tooltips with helpful text like <em>“3 Appointments – Today”</em>.</li>
+            <li>Handles <em>Yesterday</em>, <em>Today</em>, <em>Tomorrow</em> like a good personal assistant.</li>
+            <li>Plays nicely with themes and re-applies tooltips/colors when you switch modes.</li>
+        </ul>
+        <p>So basically: it’s a calendar that’s smarter than the default one, and prettier than your Outlook reminders.
+        </p>
+
+        <hr>
+
+        <h2>The XAML</h2>
+        <pre><code class="language-xml">&lt;UserControl x:Class="MyNamespace.CustomCalendarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ScrollViewer.HorizontalScrollMode="Disabled"
+             ScrollViewer.VerticalScrollBarVisibility="Disabled"&gt;
+    &lt;CalendarView x:Name="calendarView"
+                  NumberOfWeeksInView="5"
+                  Margin="0"
+                  SelectionMode="Single"
+                  ScrollViewer.HorizontalScrollMode="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Disabled" /&gt;
+&lt;/UserControl&gt;</code></pre>
+
+        <p>That’s it. Nothing magical here. We’re just wrapping a <code class="keyword">CalendarView</code> inside a
+            <code class="keyword">UserControl</code>, because we’re about to <strong>supercharge it</strong> with some
+            C#.
+        </p>
+
+        <hr>
+
+        <h2>The C# Code (The Real Party)</h2>
+        <p>Let’s break down the important parts.</p>
+
+        <h3>1. Dependency Properties</h3>
+        <p>
+            We’ve got two:
+        </p>
+        <ul>
+            <li><code class="keyword">AppointmentsData</code> → a dictionary mapping <code
+                    class="keyword">DateTime → Appointment Count</code>.</li>
+            <li><code class="keyword">SelectedDate</code> → the currently chosen date.</li>
+        </ul>
+        <p>Think of <code class="keyword">AppointmentsData</code> as your calendar’s brain. It knows which days are busy
+            and which days are empty like your social life during exam season.</p>
+
+        <h3>2. Constructor Magic</h3>
+        <pre><code class="language-cs">public CustomCalendarView()
+{
+    InitializeComponent();
+    SelectedDate = DateTime.Now;
+
+    calendarView.SelectedDates.Add(SelectedDate.Date);
+    calendarView.SelectedDatesChanged += CalendarView_SelectedDatesChanged;
+    calendarView.CalendarViewDayItemChanging += CalendarView_CalendarViewDayItemChanging;
+    calendarView.ActualThemeChanged += CalendarView_ActualThemeChanged;
+}</code></pre>
+
+        <p>Here we:</p>
+        <ul>
+            <li>Select today by default.</li>
+            <li>Hook into events so we can paint days and update tooltips.</li>
+            <li>Listen for theme changes because <em>dark mode supremacy</em>.</li>
+        </ul>
+
+        <h3>3. Tooltips for Humans</h3>
+        <pre><code class="language-cs">private void AddToolTip(CalendarViewDayItem item, int count)
+{
+    string tooltipText = $"{count} {(count == 1 ? "Appointment" : "Appointments")}\r\n{dayLabel}";
+    ToolTipService.SetToolTip(item, new ToolTip
+    {
+        Content = tooltipText,
+        Placement = PlacementMode.Mouse
+    });
+}</code></pre>
+
+        <p>This makes hovering over a day actually <em>useful</em>. Instead of just seeing a date, you’ll see:</p>
+        <ul>
+            <li><strong>“5 Appointments – Today”</strong></li>
+            <li><strong>“2 Appointments – Tomorrow”</strong></li>
+            <li>Or if it’s yesterday, just a sad <em>“1 Appointment – Yesterday”</em>.</li>
+        </ul>
+
+        <h3>4. Appointment Density Coloring</h3>
+        <pre><code class="language-cs">private static IEnumerable&lt;Windows.UI.Color&gt; GetDensityColors(int count)
+{
+    int cappedCount = Math.Min(10, count);
+    Windows.UI.Color[] colors = new Windows.UI.Color[cappedCount];
+    for (int i = 0; i &lt; cappedCount; i++)
+    {
+        colors[i] = DensityColor;
+    }
+    return colors;
+}</code></pre>
+
+        <p>
+            More appointments → more stripes. Max 10 stripes, because otherwise your calendar would look like a barcode.
+            Color is a nice semi-transparent for theme switching.
+        </p>
+
+        <h3>5. Applying Tooltips and Colors</h3>
+        <pre><code class="language-cs">private void ApplyToolTipsAndColors()
+{
+    foreach (var item in FindVisualChildren&lt;CalendarViewDayItem&gt;(calendarView))
+    {
+        if (AppointmentsData.TryGetValue(item.Date.Date, out int count) && count &gt; 0)
+        {
+            AddToolTip(item, count);
+        }
+        else
+        {
+            ToolTipService.SetToolTip(item, null);
+        }
+    }
+}</code></pre>
+
+        <p>This goes through all days in the calendar and updates them. Think of it as the <em>makeup artist</em> for
+            your <code class="keyword">CalendarView</code>.</p>
+
+        <hr>
+
+        <h2>Example Usage</h2>
+        <pre><code class="language-xml">&lt;controls:CustomCalendarView AppointmentsData="{x:Bind AppointmentsData}"
+                             SelectedDate="{x:Bind CurrentDate, Mode=TwoWay}" /&gt;</code></pre>
+        <br>
+        <pre><code class="language-cs">var today = DateTime.Now.Date;
+AppointmentsData = new Dictionary&lt;DateTime, int&gt;();
+
+for (int i = -3650; i &lt;= 1825; i++) // 10 years back, 5 years forward
+{
+    var date = today.AddDays(i);
+    AppointmentsData[date] = Random.Shared.Next(0, 25);
+}</code></pre>
+
+        <p>This example fills <strong>15 years</strong> of data with random appointment counts.</p>
+        <p>Now go forth and make your calendars <em>so colorful</em>.</p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="2.html">⬅ Previous: Control Lifecycle - Event Sequence</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>

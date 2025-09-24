@@ -20,7 +20,7 @@ window.addEventListener("load", swapGif);
 
 // Handle show more tags
 document.querySelectorAll(".tags").forEach(tagContainer => {
-    const tags = Array.from(tagContainer.querySelectorAll(".tag"));
+    const tags = Array.from(tagContainer.querySelectorAll(".blog-tag"));
     const moreBtn = tagContainer.querySelector(".show-more");
 
     let visibleCount = 4;

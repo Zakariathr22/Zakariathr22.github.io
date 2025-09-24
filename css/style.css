@@ -542,14 +542,14 @@ pre {
     background: #111;
     border-radius: 12px;
     padding: 1.2rem;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-bottom: none !important;
 }
 
 .blog-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
 }
 
 /* Title, subtitle, date */
@@ -578,7 +578,7 @@ pre {
     gap: 0.4rem;
 }
 
-.tag {
+.blog-tag {
     background: var(--color-text);
     color: #000;
     font-size: 0.75rem;
