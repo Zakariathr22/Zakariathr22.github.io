@@ -160,7 +160,7 @@ h3 {
 }
 
 /* ---------- Code style ---------- */
-.keyword {
+.keyword-style {
     background-color: #111;
     color: var(--color-accent);
     padding: 2px 6px;

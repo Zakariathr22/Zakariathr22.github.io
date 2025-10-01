@@ -44,11 +44,11 @@
         <h3>A Practical Guide to NPT and Unicode Injection</h3>
 
             <p>
-                To add math input to your WinUI 3 application, start with the <code class="keyword">RichEditBox</code>
+                To add math input to your WinUI 3 application, start with the <code class="keyword-style">RichEditBox</code>
                 control. Since <strong>Windows App SDK 1.7</strong>, it supports a new feature called
                 <strong>RichEditMathMode</strong>, which allows the control to interpret and convert text into MathML in
-                real time. For example, typing <code class="keyword">\pi</code> renders as <strong>π</strong>, and <code
-                    class="keyword">1/2</code> becomes <strong>½</strong>.
+                real time. For example, typing <code class="keyword-style">\pi</code> renders as <strong>π</strong>, and <code
+                    class="keyword-style">1/2</code> becomes <strong>½</strong>.
             </p>
 
             <pre><code class="language-cs">MathEditor.TextDocument.SetMathMode(RichEditMathMode.MathOnly);</code></pre>
@@ -56,8 +56,8 @@
             <p>
                 You don’t need to write MathML manually. Instead, it uses a system called <strong>Nearly Plain Text
                     Unicode (NPT)</strong>, a structured input format that maps common math sequences (like <code
-                    class="keyword">\infty</code>, <code class="keyword">\sum</code>, <code
-                    class="keyword">\sqrt</code>, etc.) to Unicode symbols. These symbols are then rendered as MathML
+                    class="keyword-style">\infty</code>, <code class="keyword-style">\sum</code>, <code
+                    class="keyword-style">\sqrt</code>, etc.) to Unicode symbols. These symbols are then rendered as MathML
                 behind the scenes.
             </p>
 
@@ -70,7 +70,7 @@
             <p>There are two things you must understand to use this effectively:</p>
             <ol>
                 <li>Learn the available NPT input sequences (Unicode math tables).</li>
-                <li>Trigger rendering by sending a <code class="keyword">U+0020</code> (space) or pressing Enter, this
+                <li>Trigger rendering by sending a <code class="keyword-style">U+0020</code> (space) or pressing Enter, this
                     finalizes the math input and forces the control to parse and render it properly.</li>
             </ol>
 
@@ -86,7 +86,7 @@
             </p>
 
             <p>
-                Let’s be real: users want to click <code class="keyword">π</code> button and see π, not study a Unicode
+                Let’s be real: users want to click <code class="keyword-style">π</code> button and see π, not study a Unicode
                 textbook.
             </p>
 
@@ -94,14 +94,14 @@
 
             <p>
                 But here’s the catch: <strong>WinUI 3 / Windows App SDK doesn’t provide a built-in way to inject raw
-                    Unicode characters into a <code class="keyword">RichEditBox</code></strong>, especially not in a way
+                    Unicode characters into a <code class="keyword-style">RichEditBox</code></strong>, especially not in a way
                 that triggers MathMode rendering.
             </p>
 
-            <p>That’s where the <strong>Win32 <code class="keyword">SendInput</code> API</strong> comes in.</p>
+            <p>That’s where the <strong>Win32 <code class="keyword-style">SendInput</code> API</strong> comes in.</p>
 
             <p>
-                <code class="keyword">SendInput</code> is a low-level Windows API that lets you simulate
+                <code class="keyword-style">SendInput</code> is a low-level Windows API that lets you simulate
                 <strong>keyboard or mouse input</strong>, just as if the user typed it. It bypasses the limitations of
                 the high-level UI frameworks by writing directly to the input buffer of the focused window.
             </p>
@@ -116,7 +116,7 @@
             <p>
                 Behind the scenes, we create and dispatch a series of synthetic keyboard events (keydown and keyup) for
                 each Unicode character. This lets us inject unicode chars and sequences like <code
-                    class="keyword">\u03C0</code> or <code class="keyword">\u25A0(1&&@&1&@&&1)</code> directly into the
+                    class="keyword-style">\u03C0</code> or <code class="keyword-style">\u25A0(1&&@&1&@&&1)</code> directly into the
                 control, no physical keyboard needed, no language switching required.
             </p>
 
@@ -130,8 +130,8 @@
                 <h2>Demo App</h2>
                 <p>
                     To make all of this less abstract, I built a small demo app that shows how to
-                    automate math input in <code class="keyword">RichEditBox</code> using <code
-                        class="keyword">SendInput</code>.
+                    automate math input in <code class="keyword-style">RichEditBox</code> using <code
+                        class="keyword-style">SendInput</code>.
                 </p>
 
                 <div class="gif-frame">

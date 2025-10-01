@@ -60,7 +60,7 @@
         <p>
             Yes, <em>every</em>. Even the ones nobody talks about at conferences. Even the ones that sound like they
             belong in a Marvel movie
-            (<code class="keyword">ManipulationInertiaStarting</code>, anyone?).
+            (<code class="keyword-style">ManipulationInertiaStarting</code>, anyone?).
         </p>
 
         <br>
@@ -232,11 +232,11 @@ LayoutUpdated</code></pre>
         </div>
 
         <br>
-        <h2>A Word of Caution About <code class="keyword">LayoutUpdated</code></h2>
+        <h2>A Word of Caution About <code class="keyword-style">LayoutUpdated</code></h2>
         <p>
             This event is like that one friend who never stops texting (kind of like me with my crush who never texted back). It fires <strong>a lot</strong>.
-            You look at it the wrong way? Boom, <code class="keyword">LayoutUpdated</code>. Resize the window by 1px?
-            <code class="keyword">LayoutUpdated</code> party.
+            You look at it the wrong way? Boom, <code class="keyword-style">LayoutUpdated</code>. Resize the window by 1px?
+            <code class="keyword-style">LayoutUpdated</code> party.
         </p>
 
         <p>
@@ -246,9 +246,9 @@ LayoutUpdated</code></pre>
         </p>
 
         <p>
-            If you must react to layout changes, use lighter events like <code class="keyword">SizeChanged</code> or
-            <code class="keyword">EffectiveViewportChanged</code>.
-            Reserve <code class="keyword">LayoutUpdated</code> for small, quick reactions only.
+            If you must react to layout changes, use lighter events like <code class="keyword-style">SizeChanged</code> or
+            <code class="keyword-style">EffectiveViewportChanged</code>.
+            Reserve <code class="keyword-style">LayoutUpdated</code> for small, quick reactions only.
         </p>
 
         <br>
@@ -260,9 +260,9 @@ LayoutUpdated</code></pre>
         </p>
 
         <ul>
-            <li>Use <code class="keyword">Loaded</code> for setup.</li>
-            <li>Use <code class="keyword">Unloaded</code> for cleanup.</li>
-            <li>Avoid <code class="keyword">LayoutUpdated</code> for expensive logic — or, if you have no other option,
+            <li>Use <code class="keyword-style">Loaded</code> for setup.</li>
+            <li>Use <code class="keyword-style">Unloaded</code> for cleanup.</li>
+            <li>Avoid <code class="keyword-style">LayoutUpdated</code> for expensive logic — or, if you have no other option,
                 handle it carefully as in <a href="https://github.com/microsoft/WinUI-Gallery/pull/2023"
                     target="_blank">this PR</a>.</li>
         </ul>

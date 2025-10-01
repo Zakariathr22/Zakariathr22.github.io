@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>How to Switch Themes in a WinUI App | Zakaria Tahri</title>
+
+    <meta name="description" content="Learn the right way to implement theme toggling in WinUI 3 with WinAppSDK 1.8. This guide covers theme persistence, multi-window support, and clean MVVM architecture—with a dash of dark humor." />
+    <meta name="keywords" content="WinUI 3, WinAppSDK, Theme Toggle, Dark Mode, Light Mode, C#, XAML, Desktop App, MVVM, Windows App SDK" />
+    <meta name="author" content="Zakaria Tahri">
+    <meta name="author" content="Zakariathr22">
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+
+    <!-- Blog Content -->
+    <main class="container blog-post">
+        <h1 class="magic-title">How to Switch Themes in a WinUI App</h1>
+        <h3>Building a clean, persistent, and multi-window aware theme system</h2>
+
+            <p>
+                👉 <a href="https://github.com/Zakariathr22/ThemeToggle" target="_blank">Check out the repo here</a>
+            </p>
+            <p>
+                When building WinUI 3 apps with <strong>Windows App SDK 1.8</strong>, one common challenge developers
+                face is managing application themes
+                (switching between <code class="keyword-style">Light</code>, <code class="keyword-style">Dark</code>, or
+                leaving it
+                to the <code class="keyword-style">system default</code>).
+            </p>
+
+            <p>
+                This repo shows a clean architecture for handling themes in WinUI 3 applications. Let’s break it down.
+            </p>
+
+            <br>
+            <h2>1. <a href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/Helpers/WindowHelper.cs"
+                    target="_blank"><code class="keyword-style">WindowHelper</code></a>: Herding Windows</h2>
+            <p>
+                The <a
+                    href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/Helpers/WindowHelper.cs"
+                    target="_blank"><code class="keyword-style">WindowHelper</code></a> class is the glue that manages
+                all
+                your app windows.
+            </p>
+            <ul>
+                <li><code class="keyword-style">Register(Window)</code> → Adds a window to the internal list, wires up
+                    cleanup, and applies the current
+                    theme.</li>
+                <li><code class="keyword-style">ApplyTheme(ThemeOption)</code> → Iterates through all registered windows
+                    and
+                    makes sure the theme is
+                    synced.</li>
+
+                <li>
+                    <code class="keyword-style">ApplyThemeToWindow(Window, ThemeOption)</code> → Handles the real magic:
+                    <ul>
+                        <li>Sets <code class="keyword-style">RequestedTheme</code> on the <code
+                                class="keyword-style">FrameworkElement</code>.</li>
+                        <li>Adjusts <code class="keyword-style">AppWindow.TitleBar</code> colors for hover, foreground,
+                            and
+                            background.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                So whether you’re opening one window or ten, the theme stays consistent. It’s like the dictatorship in
+                my country, one theme to rule them all.
+            </p>
+
+            <br>
+            <h2>2. <a
+                    href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/Services/ThemeService.cs"
+                    target="_blank"><code class="keyword-style">ThemeService</code></a>: The Keeper of State</h2>
+            <p>
+                This static service handles:
+            <ul>
+                <li><strong>Caching the current</strong> theme in <code class="keyword-style">_cachedTheme</code>.</li>
+                <li><strong>Persistence</strong> with <code class="keyword-style">ApplicationData.LocalSettings</code>.
+                </li>
+                <li><strong>Broadcasting changes</strong> with the <code class="keyword-style">ThemeChanged</code>
+                    event.</li>
+            </ul>
+            </p>
+            <pre><code class="language-cs">public static void SetTheme(ThemeOption theme)
+{
+    if (_cachedTheme == theme) return;
+
+    _cachedTheme = theme;
+    ApplicationData.GetDefault().LocalSettings.Values["AppTheme"] = (int)theme;
+
+    ThemeChanged?.Invoke(theme);
+}
+</code></pre>
+            <p>
+                That way, when the user selects a theme, it gets saved and reapplied the next time the app launches.
+            </p>
+
+            <br>
+            <h2>3. <a
+                    href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/ViewModels/SettingsViewModel.cs"
+                    target="_blank"><code class="keyword-style">SettingsViewModel</code></a>: MVVM Doing Its Job</h2>
+            <p>
+                Implements <code class="keyword-style">INotifyPropertyChanged</code> and bridges the gap between UI and
+                ThemeService.
+            <ul>
+                <li><code class="keyword-style">SelectedTheme</code> → Bound to the UI (<code
+                        class="keyword-style">SettingsPage</code>).</li>
+                <li>When changed, it calls <code class="keyword-style">ThemeService.SetTheme(value)</code>.</li>
+            </ul>
+            This is classic MVVM, nothing too fancy, but exactly what keeps your app testable and sane.
+            </p>
+
+            <br>
+            <h2>4. <a
+                    href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/Views/SettingsPage.xaml.cs"
+                    target="_blank"><code class="keyword-style">SettingsPage</code></a>: The UI Layer</h2>
+            <p>
+                The page gives users a dropdown (or other UI) to pick a theme and even spawn a new secondary window.
+            </p>
+            <pre><code class="language-cs">private void NewWindowButton_Click(object sender, RoutedEventArgs e)
+{
+    SecondaryWindow window = new();
+    WindowHelper.Register(window);
+    window.Activate();
+}
+</code></pre>
+            <p>
+                The key point is: every new window gets registered and keeps the theme consistent. Without that, you’d
+                end up with one window in light mode and another in dark, like my life choices before morning tea.
+            </p>
+
+            <br>
+            <h2>5. <a href="https://github.com/Zakariathr22/ThemeToggle/blob/master/ThemeToggle/App.xaml.cs"
+                    target="_blank"><code class="keyword-style">App.xaml.cs</code></a>: The Grand Conductor</h2>
+            <p>
+                The <code class="keyword-style">App</code> class wires everything up:
+            <ul>
+                <li>Initializes the <code class="keyword-style">ThemeService</code>.</li>
+                <li>Creates the main window, registers it, and applies the theme.</li>
+                <li>Subscribes to the <code class="keyword-style">ThemeChanged</code> event, which updates all windows
+                    via <code class="keyword-style">WindowHelper.ApplyTheme</code>.</li>
+            </ul>
+            This ensures the whole app ecosystem stays visually consistent.
+            </p>
+
+            <br>
+            <hr>
+            <h2>Final Thoughts</h2>
+            <p>
+                This repo is a neat little theme management system for WinUI apps. It demonstrates how to
+                centralize theme logic, persist user preferences, and handle multiple windows gracefully.
+            </p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="4.html">⬅ Previous: WinUI Gallery 2.7</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
