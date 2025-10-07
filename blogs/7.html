@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Saving & Restoring Window State | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="Learn how to save and restore window size, position, and scale in WinUI 3 apps. A clear, friendly guide to building polished, user-friendly desktop experiences." />
+    <meta name="keywords"
+        content="WinUI 3, Windows App SDK, C#, window state, save window size, restore position, DPI scaling, AppWindow, Microsoft UI, desktop development" />
+    <meta name="author" content="Zakaria Tahri" />
+
+    <meta name="author" content="Zakariathr22" />
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">Saving & Restoring Window State</h1>
+        <h3>How to make your WinUI app remember its window state between sessions.</h3>
+        <p>
+            👉 <strong>GitHub Repo:</strong> <a href="https://github.com/Zakariathr22/WindowStateSaver"
+                target="_blank">WindowStateSaver</a>
+        </p>
+
+        <h2>Goal</h2>
+        <p>
+            We’ll build a simple system that:
+        <ul>
+            <li>
+                Saves window position, size, scale (DPI), and maximized state when the app closes.
+            </li>
+            <li>
+                Restores them automatically when it starts again.
+            </li>
+        </ul>
+        The setup uses three small classes (clean, modular, and user-friendly), so our structure should look like this:
+        <pre><code class="language-cs">🪟 OurApp/
+├── 📁 Models/
+│   └── 📄 WindowState.cs
+├── 📁 Services/
+│   └── 📄 WindowStateService.cs
+├── 📁 Helpers/
+│   └── 📄 WindowStateHelper.cs
+└── 📄 MainWindow.xaml.cs</code></pre>
+        </p>
+
+        <hr>
+        <h2>Step 1: The Model <code
+                class="keyword-style"><a href="https://github.com/Zakariathr22/WindowStateSaver/blob/master/WindowStateSaver/Models/WindowState.cs" target="_blank">WindowState</a></code>
+        </h2>
+        <p>
+            Every app needs a memory. This one’s called <code class="keyword-style">WindowState</code>.<br>
+            It’s a simple class that just holds the window’s coordinates, dimensions, scale, and whether it was
+            maximized.
+        </p>
+        <p>
+            Think of it as your app’s sticky note “Hey, last time I was 1200x800, bottom-right corner, and zoomed
+            125%.”
+        </p>
+
+        <br>
+        <h2>Step 2: The Service <code
+                class="keyword-style"><a href="https://github.com/Zakariathr22/WindowStateSaver/blob/master/WindowStateSaver/Services/WindowStateService.cs" target="_blank">WindowStateService</a></code>
+        </h2>
+        <p>
+            The service does the actual saving and loading of your sticky note.<br>
+            It uses <code class="keyword-style">ApplicationData.LocalSettings</code>, which stores lightweight local
+            data that persists between sessions (even if the app crashes, which never happens, right?).
+        </p>
+        <p>
+            When you call:
+        <ul>
+            <li><code class="keyword-style">Save(WindowState)</code>, it stores your window data locally.</li>
+            <li><code class="keyword-style">Load()</code>, it reads it back when the app starts.</li>
+        </ul>
+        If no data exists yet, it simply returns null so your app can start fresh.
+        </p>
+
+        <br>
+        <h2>Step3: The helper <code
+                class="keyword-style"><a href="https://github.com/Zakariathr22/WindowStateSaver/blob/master/WindowStateSaver/Helpers/WindowStateHelper.cs" target="_blank">WindowStateHelper</a></code>
+        </h2>
+        <p>
+            This is the real hero of the story.<br>
+            It glues everything together, reading the current window size, saving it when you exit, and restoring it
+            next time.
+        </p>
+        <p>
+            <strong>Key things it does:</strong>
+        <ul>
+            <li>Gets the AppWindow (the WinUI window manager).</li>
+            <li>Uses <code class="keyword-style">XamlRoot.RasterizationScale</code> to handle DPI scaling, so your
+                window keeps the same physical size, even on different monitors.</li>
+            <li>Before saving, it temporarily <b>restores</b> the window if it’s maximized. That way, it saves the real
+                size instead of the maximized size.</li>
+            <li>When loading, it checks the display area bounds to ensure the window stays visible, so your window won’t
+                appear half off-screen or trapped in monitor limbo.</li>
+        </ul>
+        Because nothing says “great UX” like a window that opens on a monitor that doesn’t exist anymore <img
+            src="../assets/Grin Tears.png" alt="PR icon" class="emoji">.
+        </p>
+        <br>
+        <h2>Step4: Using It in <code
+                class="keyword-style"><a href="https://github.com/Zakariathr22/WindowStateSaver/blob/master/WindowStateSaver/MainWindow.xaml.cs" target="_blank">MainWindow</a></code>
+        </h2>
+        In your main window, you only need two instructions:
+        <pre><code class="language-cs">if (Content is FrameworkElement content)
+{
+    content.Loaded += (_, _) => WindowStateHelper.ApplySavedState(AppWindow, content);
+}
+
+Closed += (_, _) => WindowStateHelper.Save(this);</code></pre>
+        <p>
+        <ul>
+            <li>The first part waits for the window content to load, then applies the saved state (if any).</li>
+            <li>The second part saves the current state when the window closes.</li>
+        </ul>
+        And that’s it...
+        </p>
+
+        <hr>
+        <h2>Final Thoughts</h2>
+        <p>
+            Wouldn’t it be nice if the <code class="keyword-style">Windows App SDK</code> just remembered your window
+            size and position by itself? You know, like every other framework that’s been alive since the dinosaurs of
+            desktop UI.
+        </p>
+        <p>
+            But no, here we are, writing our own <code class="keyword-style">WindowStateHelper</code> just to make an
+            app remember it was once maximized.
+        </p>
+        <p>
+            On the bright side, now you have a clean, reusable solution, and a newfound respect for saving rectangles in
+            memory.
+        </p>
+        <p>
+            Maybe one day, someone will add this feature natively. Until then, we’ll keep pretending this was fun to
+            implement. (But deep down, we all wish this was just a property we could toggle instead of a weekend
+            project.)
+        </p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="6.html">⬅ Previous: When Ethics Pull the Plug</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
