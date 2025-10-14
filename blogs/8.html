@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Using SVG Path Icons in WinUI | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="A practical, beginner-friendly guide to using SVG PathIcon in WinUI 3, including resizing with ViewBox and use icon packs." />
+    <meta name="keywords"
+        content="WinUI 3, PathIcon, SVG icons, ViewBox, Fluent UI System Icons, XAML icons, vector graphics, Windows App SDK, C#, UI design" />
+    <meta name="author" content="Zakaria Tahri" />
+    <meta name="author" content="Zakariathr22" />
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">Using SVG Path Icons in WinUI</h1>
+        <h3>From <code class="keyword-style">PathIcon</code> Basics to ViewBox Scaling and Fluent UI Integration</h3>
+
+        <p>Icons are a core part of modern UI, especially with fluent designs and vector-based interfaces. In WinUI, one
+            of the best ways to use scalable vector icons is through the <code class="keyword-style">PathIcon</code>
+            control. In this blog, I’ll walk you through how it works, how to use an SVG path (like the GitHub logo),
+            how to fix sizing issues using <cose class="keyword-style">ViewBox</cose>, and why this approach makes it
+            easy to use icon packs.</p>
+
+        <br>
+        <h2>What is <code class="keyword-style">PathIcon</code>?</h2>
+        <p>
+            <code class="keyword-style">PathIcon</code> is a WinUI control used to display vector graphics defined by
+            XAML path geometry. Unlike bitmap images, path icons scale cleanly at any resolution and fit well with
+            modern UI styles.
+        </p>
+
+        <h3>The <code class="keyword-style">Data</code> Property</h3>
+        <p>
+            The core of <code class="keyword-style">PathIcon</code> is the <code class="keyword-style">Data</code>
+            property. It contains the vector instructions (path geometry) that describe the actual shape. These
+            instructions typically come from SVG files or design tools like Figma/Illustrator.
+        </p>
+        <strong>Example skeleton:</strong>
+        <pre><code class="language-xml">&lt;PathIcon Data="M..." Foreground="{ThemeResource TextFillColorPrimaryBrush}" /&gt;</code></pre>
+        <ul>
+            <li>Data → The SVG path converted into XAML path syntax</li>
+            <li>Foreground → Determines the icon color</li>
+        </ul>
+
+        <br>
+        <h2>Example: GitHub Icon in <code class="keyword-style">PathIcon</code></h2>
+        <p>
+            Let’s take the GitHub SVG path and place it directly inside a <code class="keyword-style">PathIcon</code>:
+        </p>
+        <pre><code class="language-xml">&lt;PathIcon Data="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+          Foreground="{ThemeResource TextFillColorPrimaryBrush}" /&gt;</code></pre>
+        <p>
+            This works and renders the GitHub logo correctly, but there’s a catch!
+        </p>
+
+        <br>
+        <h2>Resizing Issue (And Why It Happens)</h2>
+        <p>PathIcon respects its natural geometry values. SVG paths are often drawn at large sizes (like 100×100 units).
+            If you drop them directly into a toolbar, button, or small layout, the icon either:</p>
+        <ul>
+            <li>Overflows its container</li>
+            <li>Refuses to shrink correctly</li>
+            <li>Ignores Height/Width constraints</li>
+        </ul>
+        <p>So how do we fix it?</p>
+        <h3>Solution: Wrap the Icon in a <code class="keyword-style">ViewBox</code></h3>
+        <p><code class="keyword-style">Viewbox</code> automatically scales the child element (the entire path) to fit
+            the desired size.</p>
+        <pre><code class="language-xml">&lt;Viewbox Height="18"&gt;
+    &lt;PathIcon Data="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" /&gt;
+&lt;/Viewbox&gt;</code></pre>
+        <p>Now the icon will: Scale proportionally, Fit inside buttons/toolbars, Respect the given size (e.g. 16px,
+            18px, 24px)</p>
+        <p>You can also control width/height together:</p>
+        <pre><code class="language-xml">&lt;Viewbox Width="24" Height="24"&gt;
+    &lt;PathIcon Data="..." /&gt;
+&lt;/Viewbox&gt;</code></pre>
+        <p>
+            <strong>📝 Note:</strong> This is the same approach used in the WinUI Gallery. For more details, see
+            <a href="https://github.com/microsoft/WinUI-Gallery/pull/1728" target="_blank">this PR</a>
+        </p>
+        <br>
+        <h2>Using Icon Packs (Like Fluent UI System Icons)</h2>
+        <p>
+            One of the biggest advantages of using <code class="keyword-style">PathIcon</code> is that you can easily
+            integrate icon packs. <a href="https://github.com/microsoft/fluentui-system-icons"
+                target="_blank">Microsoft’s Fluent UI System Icons</a> are a great example. They provide a huge library
+            of SVG paths for common UI actions (add, delete, edit, etc.).
+        </p>
+        <p>
+            You can copy the SVG path data from the Fluent UI repo and paste it directly into a <code
+                class="keyword-style">PathIcon</code> inside a <code class="keyword-style">ViewBox</code> to get
+            perfectly scalable, theme-aware icons.</p>
+        <pre><code class="language-xml">&lt;Viewbox Height="18"&gt;
+    &lt;PathIcon Data="(Fluent icon path here)" Foreground="{ThemeResource TextFillColorPrimaryBrush}" /&gt;
+&lt;/Viewbox&gt;</code></pre>
+
+        <br><hr>
+        <h2>Final Thoughts</h2>
+        <p>
+            Using <code class="keyword-style">PathIcon</code> with SVG paths in WinUI is a powerful way to create
+            scalable, modern UIs. By wrapping icons in a <code class="keyword-style">ViewBox</code>, you can easily
+            manage sizing issues and ensure your icons look great at any resolution. Plus, integrating icon packs like
+            Fluent UI System Icons becomes straightforward, giving you access to a wide range of professionally designed
+            icons for your applications.
+        </p>
+
+        <br><hr>
+        <h2>References</h2>
+        <ul>
+            <li>
+                Microsoft Docs. PathIcon Class.
+                <a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.pathicon?view=windows-app-sdk-1.8"
+                    target="_blank">
+                    Link
+                </a>
+            </li>
+            <li>
+                Microsoft Docs. Viewbox Class.
+                <a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.viewbox?view=windows-app-sdk-1.8"
+                    target="_blank">
+                    Link
+                </a>
+            </li>
+        </ul>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="7.html">⬅ Previous: Saving & Restoring Window State</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
