@@ -620,3 +620,58 @@ pre {
     background: var(--color-secondary);
     color: #fff;
 }
+
+/* ---------- Responsive Tables ---------- */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) transparent;
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: var(--color-accent);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-container::-webkit-scrollbar-button {
+    display: none;
+    /* hides left/right scroll buttons */
+}
+
+.responsive-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-bottom: 2px solid #ccc;
+    font-size: 0.95rem;
+    min-width: 400px;
+}
+
+.responsive-table th,
+.responsive-table td {
+    text-align: left;
+    padding: 0.75em 1em;
+    white-space: nowrap;
+    border-left: none;
+    border-right: none;
+}
+
+.responsive-table th {
+    font-weight: 600;
+    border-bottom: 2px solid #ccc;
+}
+
+.responsive-table tr:not(:last-child) td {
+    border-bottom: 1px solid #e0e0e0;
+}

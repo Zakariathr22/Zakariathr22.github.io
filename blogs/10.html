@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Making Window Size Limits DPI-Aware | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="A sincere exploration of how programmers navigate social, emotional, and relationship challenges — and how their quiet efforts power the modern world." />
+    <meta name="keywords"
+        content="programmers, social challenges, emotional intelligence, relationships, work-life balance, vulnerability, dedication, unseen effort, technology, modern world" />
+    <meta name="author" content="Zakaria Tahri" />
+    <meta name="author" content="Zakariathr22" />
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">ZT</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">Making Window Size Limits DPI-Aware</h1>
+        <h3>A Practical Guide for DPI-Aware Window Constraints</h3>
+        <P>Let’s say that you want to set the maximum or minimum size of a window.</P>
+        <p>
+            You might say: <q>This is easy, just use the <code class="keyword-style">OverlappedPresenter</code> like the
+                WinUI Gallery example!</q>
+            <br> That’s true at first. You can set something like this:
+        </p>
+        <pre><code class="language-cs">var presenter = OverlappedPresenter.Create();
+presenter.PreferredMinimumWidth = 500;
+presenter.PreferredMinimumHeight = 500;
+presenter.PreferredMaximumWidth = 1000;
+presenter.PreferredMaximumHeight = 1000;
+AppWindow.SetPresenter(presenter);</code></pre>
+        <p>
+            Looks perfect, until you try it on a <strong>high-DPI display</strong> or <strong>move the window</strong>
+            between monitors.
+        </p>
+        <br>
+        <h2>The Problem</h2>
+        <p>
+            The properties <code class="keyword-style">PreferredMinimumWidth</code> and <code
+                class="keyword-style">PreferredMaximumWidth</code> work with <strong>physical pixels</strong>, not
+            <strong>DPI-scaled units</strong>.
+        </p>
+        <p>
+            So if your app runs on a 150% or 200% scaled display, your “500px” minimum width will actually look smaller
+            than expected. <br> And if you move the window to a screen with another scale, it won’t automatically
+            update.
+        </p>
+        <p>
+            This behavior is discussed here: <a href="https://github.com/microsoft/microsoft-ui-xaml/issues/10452"
+                target="_blank">OverlappedPresenter resizing problem</a>
+        </p>
+        <br>
+        <h2>What We Need</h2>
+        <p>
+            ✅ Make the min/max sizes <strong>DPI-aware</strong><br>✅ Update them when the <strong>DPI changes</strong>
+            dynamically
+        </p>
+        <br>
+        <h2>The Logic</h2>
+        <p>
+            The idea is simple:
+        </p>
+        <ul>
+            <li>Get the current <stron>DPI scale</stron> from <code
+                    class="keyword-style">XamlRoot.RasterizationScale</code>.</li>
+            <li>Multiply your width and height by that scale before applying them.</li>
+            <li>Reapply the same logic when the DPI changes.</li>
+        </ul>
+        <p>Example logic:</p>
+        <pre><code class="language-cs">if (window.AppWindow.Presenter is OverlappedPresenter presenter &&
+    window.Content is FrameworkElement content &&
+    content.XamlRoot is not null)
+{
+    double scale = content.XamlRoot.RasterizationScale;
+    presenter.PreferredMinimumWidth = (int)(500 * scale);
+}</code></pre>
+        <p>This makes your constraints consistent across different monitors and DPI levels.</p>
+        <p>🟢 For more understanding, look at the <a
+                href="https://github.com/Zakariathr22/WindowSizeDemo/blob/master/WindowSizeDemo/Helpers/WindowSizeHelper.cs"
+                target="_blank"><code class="keyword-style">WindowSizeHelper</code></a> class in the demo project.</p>
+        <br>
+        <h2>Handling Dynamic DPI Changes</h2>
+        <p>
+            <code class="keyword-style">XamlRoot.Changed</code> is raised whenever the window moves to a display with a
+            different scale.So you can reapply the same logic like this:
+        </p>
+        <pre><code class="language-cs">content.XamlRoot.Changed += (_, _) => ApplyWindowSizeLimits();</code></pre>
+        <p>🟢 For more understanding, check how the event is used in <a
+                href="https://github.com/Zakariathr22/WindowSizeDemo/blob/master/WindowSizeDemo/MainWindow.xaml.cs"
+                target="_blank"><code class="keyword-style">MainWindow.xaml.cs</code></a>.</p>
+        <p>Every time the scale changes, you just call your <code class="keyword-style">ApplyWindowSizeLimits()</code>
+            again.</p>
+        <br>
+        <hr>
+        <h2>Final Thoughts</h2>
+        <p>
+            This approach is almost identical to what the WinUI Gallery uses for its own main window. <br> You can see
+            the full discussion and implementation in <a href="https://github.com/microsoft/WinUI-Gallery/pull/2007"
+                target="_blank">this PR</a>.
+        </p>
+        <h3>Summary of Steps:</h3>
+        <div class="table-container">
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>Problem</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sizes are in physical pixels</td>
+                        <td>Multiply by <code class="keyword-style">XamlRoot.RasterizationScale</code></td>
+                    </tr>
+                    <tr>
+                        <td>Sizes don’t update on DPI change</td>
+                        <td>Handle <code class="keyword-style">XamlRoot.Changed</code> event</td>
+                    </tr>
+                    <tr>
+                        <td>Need clean reusable logic</td>
+                        <td>Move it to a helper method/class</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            Happy coding, and may your windows always fit just right!
+        </p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="9.html">⬅ Previous: Programmers (Sharp Minds, Unprepared Worlds)</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
