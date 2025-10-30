@@ -39,7 +39,7 @@
     <main class="container blog-post">
         <h1 class="magic-title">Making Window Size Limits DPI-Aware</h1>
         <h3>A Practical Guide for DPI-Aware Window Constraints</h3>
-                <p>
+        <p>
             👉 <strong>GitHub Repo:</strong> <a href="https://github.com/Zakariathr22/WindowSizeDemo"
                 target="_blank">WindowSizeDemo</a>
         </p>
@@ -125,29 +125,13 @@ AppWindow.SetPresenter(presenter);</code></pre>
                 target="_blank">this PR</a>.
         </p>
         <h3>Summary of Steps:</h3>
-        <div class="table-container">
-            <table class="responsive-table">
-                <thead>
-                    <tr>
-                        <th>Problem</th>
-                        <th>Solution</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Sizes are in physical pixels</td>
-                        <td>Multiply by <code class="keyword-style">XamlRoot.RasterizationScale</code></td>
-                    </tr>
-                    <tr>
-                        <td>Sizes don’t update on DPI change</td>
-                        <td>Handle <code class="keyword-style">XamlRoot.Changed</code> event</td>
-                    </tr>
-                    <tr>
-                        <td>Need clean reusable logic</td>
-                        <td>Move it to a helper method/class</td>
-                    </tr>
-                </tbody>
-            </table>
+        <ul>
+            <li><strong>Sizes are in physical pixels ➡</strong> Multiply by <code
+                    class="keyword-style">XamlRoot.RasterizationScale</code>.</li>
+            <li><strong>Sizes don’t update on DPI change ➡</strong> Handle <code
+                    class="keyword-style">XamlRoot.Changed</code> event.</li>
+            <li><strong>Need clean reusable logic ➡</strong> Move it to a helper method/class</li>
+        </ul>
         </div>
         <p>
             Happy coding, and may your windows always fit just right!
