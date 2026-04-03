@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>A Failed Experiment - Part One | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="A personal and technical story about a failed WinUI experiment, exploring ThemeResources beyond XAML, abstraction, workarounds, and lessons learned while building NoXamlTheme." />
+
+    <meta name="keywords"
+        content="WinUI, ThemeResources, XAML, NoXamlTheme, Microsoft.UI.Xaml, WinUI development, abstraction, software experimentation, programming blog, failed experiment, UI framework" />
+
+    <meta name="author" content="Zakaria Tahri" />
+    <meta name="author" content="Zakariathr22" />
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">THR</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">A Failed Experiment - Part One</h1>
+        <h3>A Story About Overengineering, Curiosity, and Debugging Reality</h3>
+        <p>
+            It had been a long time since I last wrote a blog. A lot has changed since then, and I found myself struggling to return to coding and writing - like someone trying to escape quicksand, where every movement feels heavier than the last.
+        </p>
+        <p>
+            As the title suggests, this post will be a little different.
+        </p>
+        <p>
+            Most people write about what went right in their work. Today, I want to do the opposite. I’m sharing a failed experiment - partly to reduce my ego (consider this a public service announcement to my own overconfidence), and partly to remind both myself and others that mistakes are not only normal, they are necessary for learning.
+        </p>
+        <p>
+            Alright, enough philosophy. Let’s dive into the technical aspects.
+        </p>
+        <hr />
+        <p>
+            One day, while working on yet another half-finished project (you know, the kind of project that exists mainly to remind you how many other unfinished projects you already have) I reached a point where I needed to use theme resources.
+        </p>
+        <p>
+            The requirement sounded simple: I needed those resources to be dynamic and accessible from code-behind, not only from XAML.
+        </p>
+        <p>
+            And that’s where the problem appeared.
+        </p>
+        <p>
+            The only official way to use ThemeResources was through XAML. That limitation pushed me to write a proposal requesting support for accessing theme resources dynamically from code. You can see it here: <a href="https://github.com/microsoft/microsoft-ui-xaml/issues/9464">GitHub Issue microsoft-ui-xaml/issues/9464</a>.
+        </p>
+        <p>
+            … and yes, after checking the date, I realized I wrote that proposal two years ago. Apparently, time moves faster than feature requests - or maybe my proposal entered a long-term archival program also known as “we’ll look into it someday.”
+        </p>
+        <p>
+            After a lot of testing, experiments, and questioning my life choices, I eventually discovered a workaround: using a lightweight style that holds the ThemeResource and applies it to the control indirectly.
+        </p>
+        <p>
+            The workaround is documented here: <a href="https://github.com/microsoft/microsoft-ui-xaml/issues/9464#issuecomment-2258432746">GitHub Comment microsoft-ui-xaml/issues/9464</a>.
+        </p>
+        <hr />
+        <p>
+            This workaround, however, came with its own problems.
+        </p>
+        <p>
+            What happens if we try to apply it to a FrameworkElement that doesn’t even expose a <code>Style</code> property? Or what if we simply want to modify theme resources without touching XAML at all?
+        </p>
+        <p>
+            Yes, I know what you’re probably thinking right now: “WTF is Zakaria talking about?”
+        </p>
+        <p>
+            Honestly… nothing revolutionary. Just layers of abstraction - maybe unnecessary today, but possibly useful to someone, somewhere, someday. Or at least that’s what I told myself at 2 a.m. while convincing my brain this was still a reasonable idea.
+        </p>
+        <p>
+            So I created a small project called NoXamlTheme. I was genuinely excited because, for a moment, I thought I had solved the problem.
+        </p>
+        <p>
+            Until… I hit another wall.
+        </p>
+        <p>
+            At that point, the only way forward was to dive into the Microsoft.UI.Xaml source code itself to understand what was really happening under the hood.
+        </p>
+        <p>
+            And since I’m currently fighting my way back into both writing and coding, this feels like a good stopping point for today’s blog.
+        </p>
+        <p>
+            I’ll leave the code here if you’re curious to explore it:
+            <a href="https://github.com/Zakariathr22/NoXamlTheme" target="_blank">NoXamlTheme GitHub Repository</a>.
+        </p>
+        <p>
+            I’ll explain the details in Part Two.
+        </p>
+        <p>
+            Bye.
+        </p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="10.html">⬅ Previous: Making Window Size Limits DPI-Aware</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
