@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>A Failed Experiment - Part One | Zakaria Tahri</title>
+
+    <meta name="description"
+        content="A personal and technical story about a failed WinUI experiment, exploring ThemeResources beyond XAML, abstraction, workarounds, and lessons learned while building NoXamlTheme." />
+
+    <meta name="keywords"
+        content="WinUI, ThemeResources, XAML, NoXamlTheme, Microsoft.UI.Xaml, WinUI development, abstraction, software experimentation, programming blog, failed experiment, UI framework" />
+
+    <meta name="author" content="Zakaria Tahri" />
+    <meta name="author" content="Zakariathr22" />
+
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">THR</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">A Failed Experiment - Part Two</h1>
+        <h3>A Story About Overengineering, Curiosity, and Debugging Reality</h3>
+        <p>
+            In Part One, I stopped exactly at the moment where curiosity turned into framework archaeology.
+        </p>
+        <p>
+            Now let’s talk about the real question.
+        </p>
+        <h2>Trying to Use ThemeResources in Code</h2>
+        <p>If you want to use a ThemeResource in code-behind, the first idea that naturally comes to mind is:</p>
+        <pre><code class="language-cs">fullNameTextBox.Background = App.Current.Resources["SystemFillColorCriticalBackgroundBrush"] as Brush;</code></pre>
+        <p>Looks correct.</p>
+        <p>Except… it’s wrong.</p>
+        <p>
+            This retrieves a static resource.<br/>It will not update when the application theme changes.
+        </p>
+        <p>
+            So your UI becomes frozen in time while the rest of the app switches between Light and Dark like nothing happened.
+        </p>
+        <h2>Second Idea: Search Inside Theme Dictionaries</h2>
+        <p>
+            The next logical step is to look inside the theme dictionaries. Maybe we can find the resource there and use it directly?
+        </p>
+        <p>And yes (technically they do) inside the application theme dictionaries.</p>
+        <p>You might try something like this:</p>
+        <pre><code class="language-cs">var dict = App.Current.Resources.ThemeDictionaries["Light"] as ResourceDictionary;
+var brush = dict["SystemFillColorCriticalBackgroundBrush"] as Brush;</code></pre>
+        <p>And then…</p>
+        <p>💥 Exception. Resource not found.</p>
+        <p>At this point you start questioning reality.</p>
+        <h2>Where Are ThemeResources Actually Stored?</h2>
+        <p>Look at your App.xaml file.</p>
+        <p>You will find this line:</p>
+        <pre><code class="language-xml">&lt;XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" /&gt;</code></pre>
+        <p>This innocent line hides the answer.</p>
+        <p><code class="keyword-style">XamlControlsResources</code> inherits from <code class="keyword-style">ResourceDictionary</code>.</p>
+        <p>And yes, this is where WinUI stores all default ThemeResources.</p>
+        <p>So instead of living directly in <code class="keyword-style">App.Current.Resources</code>, they come from merged dictionaries injected by WinUI itself.</p>
+        <h2>Diving Deeper - ThemeDictionaries</h2>
+        <p>Inside <code class="keyword-style">XamlControlsResources</code>, you’ll find:</p>
+        <pre><code class="language-xml">ThemeDictionaries
+ ├── Default   (Dark theme)
+ ├── Light
+ └── HighContrast</code></pre>
+        <p>(Honestly, calling Dark mode “Default” is a design mystery I still haven’t solved.)</p>
+        <p>And this is the full diagram:</p>
+        <pre><code class="language-xml">App.Resources
+ └── MergedDictionaries
+     └── XamlControlsResources
+         └── ThemeDictionaries
+             ├── Default (Dark)
+             ├── Light
+             └── HighContrast</code></pre>
+        <p>Good</p>
+        <p>We finally found the starting point.</p>
+        <h2>The Next Problem</h2>
+        <p>If you manually access one dictionary:</p>
+        <pre><code class="language-cs">var brush =
+((ResourceDictionary)App.Current.Resources
+    .MergedDictionaries[0]
+    .ThemeDictionaries["Light"])
+["SystemFillColorCriticalBackgroundBrush"];</code></pre>
+        <p>It works…</p>
+        <p>
+            but again:<br/>
+            ✅ Resource retrieved</br>
+            ❌ Still static
+        </p>
+        <p>The value will never update automatically when the theme changes.</p>
+        <p>Which means:</p>
+        <p>👉 WinUI’s ThemeResource behavior is not just lookup, it is runtime tracking.</p>
+        <p>So we must implement that behavior ourselves.</p>
+        <h2>The Idea</h2>
+        <p>The solution concept became surprisingly simple:</p>
+        <ol>
+            <li>Apply the resource after the element is <b>loaded</b>.</li>
+            <li>Reapply it whenever the <b>theme changes</b>.</li>
+            <li>Listen for <b>system color updates</b> (accent color, High Contrast).</li>
+            <li>Track elements so the latest assigned resource always wins.</li>
+        </ol>
+        <p>In other words: Recreate ThemeResource behavior… but in C#.</p>
+        <h2>The Helper Class</h2>
+        <p>I created a helper called:</p>
+        <code class="keyword-style">ThemeResourceHelper</code>
+        <p>Its job is to simulate XAML ThemeResource binding from code.</p>
+        <p>You can read the full implementation here:</p>
+        <a href="https://github.com/Zakariathr22/NoXamlTheme/blob/661c4dfe6d5a1ee37ccadcb5b147e2ce9c1cbe91/NoXamlTheme/ThemeResourceHelper.cs#L14">👉 https://github.com/Zakariathr22/NoXamlTheme</a>
+        <p>How It Works (Conceptually)</p>
+        <h3>1. Attached Binding State</h3>
+        <p>Each <code class="keyword-style">FrameworkElement</code> receives an attached state object storing:</p>
+        <ul>
+            <li>The resource key currently assigned to it.</li>
+            <li>dependency property to update.</li>
+        </ul>
+        <h3>2. Automatic Lifecycle Handling</h3>
+        <p>When a resource is applied:</p>
+        <ul>
+            <li><code class="keyword-style">Loaded</code> → resource applied immediately</li>
+            <li><code class="keyword-style">ActualThemeChanged</code> → reapplied automatically</li>
+            <li><code class="keyword-style">Unloaded</code> → element removed from tracking</li>
+        </ul>
+        <h3>3. Global System Tracking</h3>
+        <p>The helper subscribes once to:</p>
+        <pre><code class="language-cs">UISettings.ColorValuesChanged</code></pre>
+        <p>This detects:</p>
+        <ul>
+            <li>Accent color changes.</li>
+            <li>High Contrast mode toggling.</li>
+            <li>Other system color updates.</li>
+        </ul>
+        <h3>4. Choosing the Correct Theme Dictionary</h3>
+        <p>When applying a resource, the helper determines the current theme (Light, Dark, High Contrast) and looks up the resource in the corresponding dictionary.</p>
+        <p>It then applies the retrieved value to the target property.</p>
+        <h2>What This Means</h2>
+        <p>This approach allows for dynamic theme updates while maintaining a clean and maintainable codebase.</p>
+        <p>
+            I’ll leave you with the code for now.<br/>
+            You’ll probably notice a problem in it, and that’s exactly where this experiment reached its limit for me.
+        </p>
+        <p>See you in Part Three.</p>
+        <p>Bye.</p>
+        <hr>
+        <h2>References</h2>
+        <ul>
+            <li><a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.resourcedictionary?view=windows-app-sdk-1.8" target="_blank">ResourceDictionary Class</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.xamlcontrolsresources?view=windows-app-sdk-1.8" target="_blank">XamlControlsResources Class</a></li>
+            <li><a href="https://github.com/Zakariathr22/NoXamlTheme/blob/master/NoXamlTheme/ThemeResourceHelper.cs" target="_blank">ThemeResourceHelper Implementation</a></li>
+        </ul>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="11.html">⬅ Previous: A Failed Experiment - Part One</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+
+</html>
