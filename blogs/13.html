@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>From Code to Compliance | Zakaria Tahri</title>
+
+    <meta name="description"
+          content="What Every Software Engineer Should Know About the Pharmaceutical Industry." />
+
+    <meta name="keywords"
+          content="pharmaceutical industry, pharmaceutical IT, GMP, computer system validation, CSV, software engineer, data integrity, ALCOA+, audit trail, computerized systems, MES, LIMS, ERP, pharmaceutical manufacturing, compliance, regulated industry" />
+
+    <meta name="author" content="Zakaria Tahri" />
+    <meta name="author" content="Zakariathr22" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Cinzel+Decorative&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Code Highlighting -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-xml.min.js" defer></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="topbar-border">
+        <header class="topbar">
+            <a class="logo" href="../">THR</a>
+            <ul class="home-link">
+                <li><a href="../">Home</a></li>
+            </ul>
+        </header>
+    </div>
+    <main class="container blog-post">
+        <h1 class="magic-title">From Code to Compliance</h1>
+        <h3>What Every Software Engineer Should Know About the Pharmaceutical Industry</h3>
+        <p>
+            During my vacation, I met up with some old friends. Most of them are software developers and software engineers working in the tech industry.
+        </p>
+        <p>
+           As we caught up, the conversation eventually turned to work. When they asked what I do these days, I realized I kept answering the same questions over and over. 
+        </p>
+        <p>
+            "What does IT even do in a pharmaceutical company?"
+        </p>
+        <p>
+            "Are you developing software?"
+        </p>
+        <p>
+            "Why would a pharmaceutical company need software engineers?"
+        </p>
+        <p>
+            "Isn't everything just handled by the equipment vendors?"
+        </p>
+        <p>
+            I found myself spending a good part of the evening explaining how software is deeply integrated into pharmaceutical manufacturing, how critical computerized systems are, and why IT is much more than maintaining servers or maintaining ERP systems.
+        </p>
+        <p>
+            By the end of the conversation, one of my friends joked, "You should just write a blog about this instead of explaining it every time."
+        </p>
+        <p>
+            So that's exactly what this article is.
+        </p>
+        <p>
+            If you're a software engineer, developer, DevOps engineer, system administrator, or simply someone curious about what happens behind the scenes in pharmaceutical manufacturing, this blog is for you.
+        </p>
+        <p>
+            Let's start with the most important thing to understand: <strong>the goal of a pharmaceutical company is not to build software - it is to produce medicine that is consistently safe, effective, and of the expected quality. Everything, including IT, exists to support that mission.</strong>
+        </p>
+        <hr>
+        <h2>
+            The Goal Is Not to Build Software
+        </h2>
+        <p>
+            In most software companies, success is measured by things like:
+        </p>
+        <ul>
+            <li>How many features were shipped</li>
+            <li>How many bugs were fixed</li>
+            <li>How fast the team can deliver new features</li>
+        </ul>
+        <p>
+            In pharmaceuticals, the primary objective is much simpler:
+        </p>
+        <p>
+            <strong>
+                Produce medicine that is consistently safe, effective, and of the expected quality.
+            </strong>
+        </p>
+        <p>
+            Produce medicine that is consistently safe, effective, and of the expected quality.
+        </p>
+        <p>
+            Every department <strong>including IT</strong> exists to support that objective.
+        </p>
+
+        <br>
+        <h2>
+            Why Regulations Matter
+        </h2>
+        <p>
+            Unlike many industries, pharmaceutical companies operate under strict regulations such as Good Manufacturing Practice (GMP).
+        </p>
+        <p>
+            Regulators don't simply ask: "Does your software work?"
+        </p>
+        <p>
+            They ask:
+        </p>
+        <ul>
+            <li>Can you prove it works?</li>
+            <li>Can you prove it always works?</li>
+            <li>Can you prove nobody changed it without authorization?</li>
+            <li>Can you reconstruct every important action that happened years or months ago?</li>
+        </ul>
+        <p>
+            Documentation is just as important as the software itself.
+        </p>
+        <p>
+            If it isn't documented, regulators often consider it as if it never happened.
+        </p>
+
+        <br>
+        <h2>
+            What Is a Computerized System?
+        </h2>
+        <p>
+            A computerized system is any software that supports GMP activities.
+        </p>
+        <p>
+            Examples include:
+        </p>
+        <ul>
+            <li>ERP systems</li>
+            <li>SCADA and HMI applications</li>
+            <li>Chromatography software</li>
+            <li>Electronic Batch Records</li>
+            <li>Weighing systems</li>
+            <li>Equipment control software</li>
+            <li>...etc</li>
+        </ul>
+        <p>
+            Some systems only store information.
+        </p>
+        <p>
+            Others control equipment that manufactures medicine.
+        </p>
+        <p>
+            The higher the impact on product quality, the higher the regulatory expectations.
+        </p>
+
+        <br>
+        <h2>
+            The Role of IT
+        </h2>
+        <p>
+            IT in pharmaceuticals extends far beyond infrastructure.
+        </p>
+        <p>
+            Typical responsibilities include:
+        </p>
+        <ul>
+            <li>Managing computerized systems</li>
+            <li>Ensuring secure authentication and authorization</li>
+            <li>Protecting data integrity</li>
+            <li>Performing backups and disaster recovery</li>
+            <li>Managing system changes</li>
+            <li>Participating in audits and inspections</li>
+            <li>Software validation</li>
+            <li>Qualification of equipment and systems</li>
+            <li>Managing user access</li>
+            <li>Maintaining audit trails</li>
+        </ul>
+        <p>
+            Every modification must be controlled.
+        </p>
+        <p>
+            Sometimes changing a single configuration value requires documentation, testing, approval, and formal release.
+        </p>
+
+        <br>
+        <h2>
+            Validation: The Word You'll Hear Every Day
+        </h2>
+        <p>
+            One concept defines pharmaceutical IT more than any other:
+        </p>
+        <p>
+            <strong>Computerized System Validation (CSV).</strong>
+        </p>
+        <p>
+            Validation answers a simple question:
+        </p>
+        <p>
+            <q>Can we demonstrate 'with objective evidence' that this system consistently performs as intended?</q>
+        </p>
+        <p>
+            Instead of saying: "I tested it."
+        </p>
+        <p>
+            You produce documented evidence showing:
+        </p>
+        <ul>
+            <li>Requirements</li>
+            <li>Risk assessment</li>
+            <li>Test protocols</li>
+            <li>Test execution</li>
+            <li>Deviations</li>
+            <li>Approvals</li>
+            <li>Traceability</li>
+        </ul>
+        <p>
+            Everything must be reproducible.
+        </p>
+
+        <br>
+        <h2>
+            Data Integrity Is Everything
+        </h2>
+        <p>
+            Imagine deleting a database record in a normal business application.
+        </p>
+        <p>
+            Usually, that's acceptable.
+        </p>
+        <p>
+            Now imagine deleting laboratory results that determine whether a batch of medicine is released to patients.
+        </p>
+        <p>
+            That's why pharmaceutical systems emphasize data integrity.
+        </p>
+        <p>
+            A common framework is ALCOA+:
+        </p>
+        <ul>
+            <li>Attributable</li>
+            <li>Legible</li>
+            <li>Contemporaneous</li>
+            <li>Auditable</li>
+            <li>Complete</li>
+        </ul>
+        <p>The "+" extends this with principles such as completeness, consistency, endurance, and availability.</p>
+    
+        <br>
+        <h2>Audit Trails</h2>
+        <p>One feature you'll hear about constantly is the audit trail.</p>
+        <p>An audit trail records:</p>
+        <ul>
+            <li>Who did what</li>
+            <li>When they did it</li>
+            <li>When it changed</li>
+            <li>Sometimes why it changed</li>
+        </ul>
+        <p>Nothing important should disappear without leaving evidence.</p>
+        <p>During inspections, auditors often review audit trails before almost anything else.</p>
+
+        <br>
+        <h2>User Access Isn't Just Security</h2>
+        <p>In many software projects, permissions are mainly about security.</p>
+        <p>In pharmaceuticals, permissions are also about compliance.</p>
+        <p>A simple question like:</p>
+        <p>
+            <q>A simple question like:"Can an operator modify system date and time?"</q>
+        </p>
+        <p>Can have serious implications for data integrity and regulatory compliance.</p>
+        <p>Every role must have only the permissions necessary to perform its responsibilities.</p>
+
+        <br>
+        <h2>Change Control</h2>
+        <p>Developers love shipping updates.</p>
+        <p>Pharmaceutical companies love controlled updates.</p>
+        <p>Before implementing a change, you need to ask:</p>
+        <ul>
+            <li>Why is the change necessary?</li>
+            <li>What risks does it introduce?</li>
+            <li>Which systems are affected?</li>
+            <li>Does it require revalidation?</li>
+            <li>Who approved it?</li>
+        </ul>
+        <p>
+            Even a small software update can trigger additional testing.
+        </p>
+
+        <br>
+        <h2>Documentation</h2>
+        <p>Software engineers often joke about documentation.</p>
+        <p>In pharmaceuticals, documentation is part of the product.</p>
+        <p>Typical documents include:</p>
+        <ul>
+            <li>User Requirements</li>
+            <li>Functional Specifications</li>
+            <li>Risk Assessments</li>
+            <li>Installation Qualification (IQ)</li>
+            <li>Operational Qualification (OQ)</li>
+            <li>Performance Qualification (PQ)</li>
+            <li>Validation Reports</li>
+        </ul>
+        <p>Writing good documentation is considered a technical skill, not administrative work.</p>
+    
+        <br>
+        <h2>A Different Engineering Mindset</h2>
+        <p>
+            Moving into pharmaceutical IT changed how I think about software.
+        </p>
+        <p>
+            I still appreciate clean architecture, automation, and elegant code.
+        </p>
+        <p>
+            But now I also think about questions like:
+        </p>
+        <ul>
+            <li>Can this change be traced?</li>
+            <li>Can an auditor understand this six years from now?</li>
+            <li>Is every action recorded?</li>
+            <li>Can we demonstrate compliance?</li>
+            <li>What happens if this system fails during production?</li>
+        </ul>
+        <p>
+            Building software is important.
+        </p>
+        <p>
+            Building software that regulators, auditors, quality assurance teams, and patients can trust is something else entirely.
+        </p>
+
+        <hr>
+        <h2>Final Thoughts</h2>
+        <p>I'll end with something personal.</p>
+        <p>Before joining the pharmaceutical industry, I loved exploring new technologies, building side projects, and contributing to open source. My GitHub contribution graph was something I was genuinely proud of.</p>
+        <p>Pharma is different.</p>
+        <p>The industry values stability over novelty. You'll often spend more time validating software than developing it, and more time documenting changes than making them. For someone passionate about software engineering, that can sometimes feel limiting.</p>
+        <p>If you focus only on your day job, it's easy to fall behind while the rest of the industry moves forward with AI, cloud-native systems, new programming languages, and modern frameworks.</p>
+        <p>That's why I believe every software engineer in pharma should keep learning outside of work. Build side projects, contribute to open source, and stay curious.</p>
+        <p>That said, pharmaceutical IT offers something unique: stable careers, disciplined engineering practices, and the satisfaction of knowing your work ultimately helps ensure patients receive safe, high-quality medicines.</p>
+        <p>Enjoy the stability, but never stop growing.</p>
+    </main>
+
+    <!-- Blog Navigation Section -->
+    <section class="blog-nav">
+        <div class="blog-prev">
+            <a href="12.html">⬅ Previous: A Failed Experiment - Part Two</a>
+        </div>
+        <div class="blog-next">
+        </div>
+    </section>
+
+    <!-- Placeholder GIF -->
+    <div class="gif-frame">
+        <img src="../assets/placeholder2.gif" alt="decorative gif">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2025 Zakaria Tahri. All rights reserved (until AI takes over anyway).</p>
+    </footer>
+</body>
+ </html>
