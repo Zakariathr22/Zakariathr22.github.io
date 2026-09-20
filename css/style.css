@@ -179,6 +179,7 @@ h3 {
 }
 
 .gif-frame img {
+    width: 100%;
     max-width: 800px;
     height: auto;
     display: block;
