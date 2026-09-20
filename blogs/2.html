@@ -21,10 +21,9 @@
     <link rel="stylesheet" href="../css/style.css">
 
     <!-- PrismJS for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js" defer></script>    
     <link rel="icon" type="image/png" href="../assets/favicon.png">
 </head>
 
@@ -98,29 +97,30 @@ LayoutUpdated</code></pre>
                 <defs>
                     <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"
                         markerUnits="strokeWidth">
-                        <path d="M0,0 L10,5 L0,10 z" fill="#eee" />
+                        <path d="M0,0 L10,5 L0,10 z" fill="#333333" />
                     </marker>
                     <style>
                         .box {
-                            fill: #111;
-                            stroke: #eee;
+                            fill: #ffffff;
+                            stroke: #cccccc;
                             stroke-width: 2;
                         }
 
                         .title {
-                            fill: #fff;
+                            fill: #111111;
+                            font-weight: 600;
                         }
 
                         .subtitle {
-                            fill: #ccc;
+                            fill: #555555;
                         }
 
                         .warn {
-                            fill: #ff6666;
+                            fill: #d9381e;
                         }
 
                         .muted {
-                            fill: #aaa;
+                            fill: #666666;
                         }
 
                         .emoji {
@@ -136,7 +136,7 @@ LayoutUpdated</code></pre>
                         <text x="300" y="28" class="title" text-anchor="middle">DataContextChanged</text>
                         <text x="300" y="50" class="muted" text-anchor="middle">binding context arrives</text>
                     </g>
-                    <line x1="300" y1="76" x2="300" y2="120" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="76" x2="300" y2="120" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Loading -->
                     <g transform="translate(0,120)">
@@ -144,7 +144,7 @@ LayoutUpdated</code></pre>
                         <text x="300" y="28" class="title" text-anchor="middle">Loading</text>
                         <text x="300" y="50" class="muted" text-anchor="middle">control is being built</text>
                     </g>
-                    <line x1="300" y1="192" x2="300" y2="236" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="192" x2="300" y2="236" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- EffectiveViewportChanged -->
                     <g transform="translate(0,236)">
@@ -152,7 +152,7 @@ LayoutUpdated</code></pre>
                         <text x="300" y="28" class="title" text-anchor="middle">EffectiveViewportChanged</text>
                         <text x="300" y="50" class="muted" text-anchor="middle">layout figuring itself out</text>
                     </g>
-                    <line x1="300" y1="308" x2="300" y2="352" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="308" x2="300" y2="352" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- SizeChanged -->
                     <g transform="translate(0,352)">
@@ -160,7 +160,7 @@ LayoutUpdated</code></pre>
                         <text x="300" y="28" class="title" text-anchor="middle">SizeChanged</text>
                         <text x="300" y="50" class="muted" text-anchor="middle">control got its size</text>
                     </g>
-                    <line x1="300" y1="424" x2="300" y2="468" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="424" x2="300" y2="468" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- First LayoutUpdated -->
                     <g transform="translate(0,468)">
@@ -169,16 +169,15 @@ LayoutUpdated</code></pre>
                         <text x="300" y="56" class="warn" text-anchor="middle">first interruption</text>
                         <text x="300" y="76" class="emoji" text-anchor="middle">📲</text>
                     </g>
-                    <line x1="300" y1="556" x2="300" y2="600" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="556" x2="300" y2="600" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Loaded -->
                     <g transform="translate(0,600)">
                         <rect class="box" width="600" height="72" rx="10" ry="10" />
                         <text x="300" y="30" class="title" text-anchor="middle">Loaded 🎉</text>
-                        <text x="300" y="52" class="muted" text-anchor="middle">control is part of the visual tree —
-                            ready</text>
+                        <text x="300" y="52" class="muted" text-anchor="middle">control is part of the visual tree — ready</text>
                     </g>
-                    <line x1="300" y1="672" x2="300" y2="716" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="672" x2="300" y2="716" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Second LayoutUpdated -->
                     <g transform="translate(0,716)">
@@ -187,7 +186,7 @@ LayoutUpdated</code></pre>
                         <text x="300" y="56" class="warn" text-anchor="middle">“Hey, remember me?”</text>
                         <text x="300" y="76" class="emoji" text-anchor="middle">💬</text>
                     </g>
-                    <line x1="300" y1="804" x2="300" y2="904" stroke="#eee" stroke-width="2" marker-end="url(#arrow)" />
+                    <line x1="300" y1="804" x2="300" y2="904" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Window Closing -->
                     <g transform="translate(0,904)">
@@ -195,29 +194,24 @@ LayoutUpdated</code></pre>
                         <text x="300" y="28" class="title" text-anchor="middle">Window Closing 👋</text>
                         <text x="300" y="50" class="muted" text-anchor="middle">time to clean up</text>
                     </g>
-                    <line x1="300" y1="976" x2="300" y2="1020" stroke="#eee" stroke-width="2"
-                        marker-end="url(#arrow)" />
+                    <line x1="300" y1="976" x2="300" y2="1020" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Third LayoutUpdated -->
                     <g transform="translate(0,1020)">
                         <rect class="box" width="600" height="88" rx="10" ry="10" />
                         <text x="300" y="30" class="title" text-anchor="middle">LayoutUpdated ⚠️</text>
-                        <text x="300" y="56" class="warn" text-anchor="middle">still talking... even while
-                            closing</text>
+                        <text x="300" y="56" class="warn" text-anchor="middle">still talking... even while closing</text>
                         <text x="300" y="76" class="emoji" text-anchor="middle">🙄</text>
                     </g>
-                    <line x1="300" y1="1108" x2="300" y2="1152" stroke="#eee" stroke-width="2"
-                        marker-end="url(#arrow)" />
+                    <line x1="300" y1="1108" x2="300" y2="1152" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Unloaded -->
                     <g transform="translate(0,1152)">
                         <rect class="box" width="600" height="72" rx="10" ry="10" />
                         <text x="300" y="28" class="title" text-anchor="middle">Unloaded</text>
-                        <text x="300" y="50" class="muted" text-anchor="middle">control removed from visual tree —
-                            cleanup</text>
+                        <text x="300" y="50" class="muted" text-anchor="middle">control removed from visual tree — cleanup</text>
                     </g>
-                    <line x1="300" y1="1224" x2="300" y2="1268" stroke="#eee" stroke-width="2"
-                        marker-end="url(#arrow)" />
+                    <line x1="300" y1="1224" x2="300" y2="1268" stroke="#333333" stroke-width="2" marker-end="url(#arrow)" />
 
                     <!-- Fourth LayoutUpdated -->
                     <g transform="translate(0,1268)">
@@ -228,7 +222,6 @@ LayoutUpdated</code></pre>
                     </g>
                 </g>
             </svg>
-
         </div>
 
         <br>
@@ -287,7 +280,7 @@ LayoutUpdated</code></pre>
     </section>
 
     <div class="gif-frame">
-        <img src="../assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
+        <img src="../assets/placeholder5.gif" alt="An image proof that I know how to center a div.">
     </div>
 
     <!-- Footer -->
