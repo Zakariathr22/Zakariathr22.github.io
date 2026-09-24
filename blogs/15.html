@@ -35,41 +35,58 @@
 
     <!-- Blog Content -->
     <main class="container blog-post">
-        <h1 class="magic-title">The Perfect Image Size for Faster Applications</h1>
-        <h3>Keep images lightweight to improve loading speed and application performance.</h3>
+        <h1 class="magic-title">Why I Built LockBox</h1>
+        <h3>When Excel files start multiplying, it might be time to build something.</h3>
         
+        <div class="gif-frame">
+            <img src="../assets/Blogs/15-1.png"
+                alt="Screenshot of LockBox" />
+        </div>
+
         <p>
-            Large images can slow down applications, increase bandwidth usage, and create a poor user experience. A practical target is to keep most application images at <strong>0.5 MB (500 KB) or less</strong>.
+            When I was working at Biopharm, I noticed that information about computerized systems was spread across Excel files, documents, emails, and probably a few places nobody remembered.
         </p>
         <p>
-            You can easily reduce an image to this size using an online tool such as <a href="https://www.simpleimageresizer.com/resize-image-to-0.5-mb" target="_blank">Simple Image Resizer</a>. The tool lets you upload an image, choose the desired file size, and resize it without installing additional software.
+            So I thought:
+        </p>
+        <q>
+            There has to be a better way.
+        </q>
+        <p>
+            That was the beginning of <strong>LockBox</strong>.
         </p>
         <p>
-            For even better performance:
+            It is a small Windows application for centralizing system information, access management, network information, backups, users, and administrative accounts.
         </p>
-        <ul>
-            <li>Resize images to the dimensions you actually need.</li>
-            <li>Compress images before uploading them.</li>
-            <li>Lazy-load images that aren't immediately visible.</li>
-            <li>Use caching to avoid downloading the same images repeatedly.</li>                    
-        </ul>
         <p>
-           <strong>The goal isn't to make every image exactly 0.5 MB</strong>. If an image looks good at 100 KB, that's even better. Use the smallest file size that maintains the required quality.
+            Because putting sensitive information into yet another Excel file did not feel like a great long-term strategy, I also added <strong>encryption and role-based access</strong>.
+        </p>
+        <p>
+            I built it with <strong>C#, WinUI 3, and MySQL</strong>.
+        </p>
+        <p>
+            It is not revolutionary software.
+        </p>
+        <p>
+            It is just one of those projects where you look at a daily problem and think:
+        </p>
+        <q>
+           Fine. I'll build a tool for this. 
+        </q>
+        <p>
+            And sometimes, that is how software happens.
         </p>
     </main>
 
     <!-- Blog Navigation Section -->
     <section class="blog-nav">
         <div class="blog-prev">
-            <a href="13.html">⬅ Previous: From Code to Compliance</a>
-        </div>
-        <div class="blog-next">
-            <a href="15.html">Next: Why I Built LockBox ➡</a>
+            <a href="14.html">⬅ Previous: The Perfect Image Size for Faster Applications</a>
         </div>
     </section>
 
     <div class="gif-frame">
-        <img src="../assets/placeholder15.jpg" alt="An image proof that I know how to center a div.">
+        <img src="../assets/placeholder2.gif" alt="An image proof that I know how to center a div.">
     </div>
 
     <!-- Footer -->
